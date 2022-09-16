@@ -31,8 +31,9 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task Get()
+        public async Task<IActionResult> Get()
         {
+            return Ok("Aloo");
 
             //okunan dataya update ugulayip auto updateddate kontrolu
             //Order order = await _orderReadRepository.GetByIdAsync("8123086e-6d52-4389-aad7-5eb2a1884124");

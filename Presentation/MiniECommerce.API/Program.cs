@@ -1,19 +1,24 @@
+using FluentValidation.AspNetCore;
+using MiniECommerce.Application.Validators.Products;
+using MiniECommerce.Infrastructure.Filters;
 using MiniECommerce.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistenceServices();
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-
-//Tüm gelen isteklere acik olma politikasi icin
-//policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
-
-
-policy.WithOrigins("http://localhost:4200/", "https://localhost:4200/").AllowAnyHeader().AllowAnyMethod()
+// Gelen belirli isteklere acik olma politikasi icin
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyMethod().AllowAnyHeader()
 ));
 
-builder.Services.AddControllers();
+// Tüm gelen isteklere acik olma politikasi icin
+// builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+// policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
+// ));
+
+builder.Services.AddControllers(options=> options.Filters.Add<ValidationFilter>())
+    .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
+    .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -26,7 +31,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseStaticFiles();
+
+//UseCors UseRouting ile UseAuthentication arasinda kullanilir
+app.UseCors(); //"myclients"
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiniECommerce.Application.Abstractions;
 using MiniECommerce.Application.Repositories;
 using MiniECommerce.Application.RequestParameters;
+using MiniECommerce.Application.Services;
 using MiniECommerce.Application.ViewModels.Products;
 using MiniECommerce.Domain.Entities;
 using MiniECommerce.Persistence.Repositories;
@@ -20,13 +21,15 @@ namespace MiniECommerce.API.Controllers
         private readonly ICustomerWriteRepository _customerWriteRepository;
         private readonly IOrderReadRepository _orderReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;   
+        private readonly IFileService _fileService;
 
         public ProductsController(IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
             IOrderWriteRepository orderWriteRepository,
             ICustomerWriteRepository customerWriteRepository,
             IOrderReadRepository orderReadRepository,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IFileService fileService)
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
@@ -34,6 +37,7 @@ namespace MiniECommerce.API.Controllers
             _customerWriteRepository = customerWriteRepository;
             _orderReadRepository = orderReadRepository;
             _webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -139,21 +143,7 @@ namespace MiniECommerce.API.Controllers
         [HttpPost("{action}")]
         public async Task<IActionResult> Upload()
         {
-            //wwwroot/resource/product-images
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/product-images");
-
-            if(!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-
-            Random rnd = new Random();
-            foreach(IFormFile file in Request.Form.Files)
-            {
-                string fullPath = Path.Combine(uploadPath, $"{rnd.Next()}{Path.GetExtension(file.FileName)}");
-
-                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                await file.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
-            }
+            await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
             return Ok();
         }
 

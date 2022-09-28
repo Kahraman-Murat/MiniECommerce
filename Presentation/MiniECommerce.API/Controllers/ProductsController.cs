@@ -143,7 +143,7 @@ namespace MiniECommerce.API.Controllers
         [HttpPost("{action}")]
         public async Task<IActionResult> Upload()
         {
-            await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
+            await _fileService.UploadAsync("resource\\product-images", Request.Form.Files);
             return Ok();
         }
 

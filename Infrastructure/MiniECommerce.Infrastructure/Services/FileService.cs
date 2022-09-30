@@ -117,7 +117,7 @@ namespace MiniECommerce.Infrastructure.Services
                 //await fileStream.FlushAsync();
 
                 bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
-                values.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));
+                values.Add((fileNewName, $"{path}\\{fileNewName}"));
                 results.Add(result);
             }
 

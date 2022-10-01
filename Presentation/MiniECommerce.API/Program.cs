@@ -1,7 +1,9 @@
 using FluentValidation.AspNetCore;
 using MiniECommerce.Application.Validators.Products;
 using MiniECommerce.Infrastructure;
+using MiniECommerce.Infrastructure.Enums;
 using MiniECommerce.Infrastructure.Filters;
+using MiniECommerce.Infrastructure.Services.Storage.Local;
 using MiniECommerce.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfraStructureServices();
+
+
+builder.Services.AddStorage<LocalStorage>();
+//builder.Services.AddStorage(StorageType.Azure);
+
 // Gelen belirli isteklere acik olma politikasi icin
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyMethod().AllowAnyHeader()
 ));

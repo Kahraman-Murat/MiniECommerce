@@ -1,15 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MiniECommerce.Application.Abstractions.Storage;
-using MiniECommerce.Application.Services;
 using MiniECommerce.Infrastructure.Enums;
-using MiniECommerce.Infrastructure.Services;
 using MiniECommerce.Infrastructure.Services.Storage;
+using MiniECommerce.Infrastructure.Services.Storage.Azure;
 using MiniECommerce.Infrastructure.Services.Storage.Local;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MiniECommerce.Infrastructure
 {
@@ -21,7 +15,7 @@ namespace MiniECommerce.Infrastructure
             serviceCollection.AddScoped<IStorageService, StorageService>();
         }
 
-        public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : class, IStorage
+        public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {
             serviceCollection.AddScoped<IStorage, T>();
         }
@@ -34,6 +28,7 @@ namespace MiniECommerce.Infrastructure
                     serviceCollection.AddScoped<IStorage, LocalStorage>();
                     break;
                 case StorageType.Azure:
+                    serviceCollection.AddScoped<IStorage, AzureStorage>();
                     break;
                 case StorageType.AWS:
                     break;

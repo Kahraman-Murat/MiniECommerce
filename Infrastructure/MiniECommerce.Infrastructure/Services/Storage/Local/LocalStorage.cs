@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MiniECommerce.Infrastructure.Services.Storage.Local
 {
-    public class LocalStorage : ILocalStorage
+    public class LocalStorage : Storage, ILocalStorage
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         public LocalStorage(IWebHostEnvironment webHostEnvironment)
@@ -64,12 +64,14 @@ namespace MiniECommerce.Infrastructure.Services.Storage.Local
             //Random rnd = new Random();
             foreach (IFormFile file in files)
             {
+                string fileNewName = await FileRenameAsync(path, file.Name, HasFile);
+
                 //string fileNewName = await FileRenameAsync(uploadPath, file.FileName);
 
                 //bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
                 //values.Add((fileNewName, $"{path}\\{fileNewName}"));
-                await CopyFileAsync($"{uploadPath}\\{file.Name}", file);
-                values.Add((file.Name, $"{path}\\{file.Name}"));
+                await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
+                values.Add((fileNewName, $"{path}\\{fileNewName}"));
                 //results.Add(result);
             }
 

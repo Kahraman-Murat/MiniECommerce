@@ -28,9 +28,9 @@ namespace MiniECommerce.Infrastructure.Services.Storage
         {
             //string dosya = $"{pathOrContainerName}\\{fileName}{extension}";
             //bool d = File.Exists(dosya);
-
+            bool h = hasFileMethod(pathOrContainerName, $"{fileName}{extension}");
             //if (d)
-            if (hasFileMethod(pathOrContainerName,fileName))
+            if (h)
             
             {
                 //Dosya adini tirelerden bol liste yap

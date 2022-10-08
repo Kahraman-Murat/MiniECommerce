@@ -28,7 +28,7 @@ namespace MiniECommerce.Infrastructure.Services.Storage.Local
         }
 
         public bool HasFile(string path, string fileName)
-            => File.Exists($"{path}\\{fileName}");
+            => File.Exists($"{Path.Combine(_webHostEnvironment.WebRootPath, path)}\\{fileName}");
 
         public async Task<bool> CopyFileAsync(string path, IFormFile file)
         {
@@ -65,6 +65,7 @@ namespace MiniECommerce.Infrastructure.Services.Storage.Local
             foreach (IFormFile file in files)
             {
                 string fileNewName = await FileRenameAsync(path, file.Name, HasFile);
+
 
                 //string fileNewName = await FileRenameAsync(uploadPath, file.FileName);
 

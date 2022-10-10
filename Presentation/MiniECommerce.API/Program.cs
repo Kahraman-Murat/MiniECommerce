@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using MiniECommerce.Application;
 using MiniECommerce.Application.Validators.Products;
 using MiniECommerce.Infrastructure;
 using MiniECommerce.Infrastructure.Enums;
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfraStructureServices();
+builder.Services.AddApplicationServices(); 
 
 
 builder.Services.AddStorage<LocalStorage>();

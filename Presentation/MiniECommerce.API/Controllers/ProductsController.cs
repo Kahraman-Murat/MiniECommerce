@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MiniECommerce.Application.Abstractions.Storage;
 using MiniECommerce.Application.Features.Commands.Product.CreateProduct;
 using MiniECommerce.Application.Features.Commands.Product.RemoveProduct;
 using MiniECommerce.Application.Features.Commands.Product.UpdateProduct;
@@ -11,9 +8,6 @@ using MiniECommerce.Application.Features.Commands.ProductImageFile.UploadProduct
 using MiniECommerce.Application.Features.Queries.Product.GetAllProduct;
 using MiniECommerce.Application.Features.Queries.Product.GetByIdProduct;
 using MiniECommerce.Application.Features.Queries.ProductImageFile.GetProductImages;
-using MiniECommerce.Application.Repositories;
-using MiniECommerce.Application.ViewModels.Products;
-using MiniECommerce.Domain.Entities;
 using System.Net;
 
 namespace MiniECommerce.API.Controllers
@@ -22,6 +16,7 @@ namespace MiniECommerce.API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        /*
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IOrderWriteRepository _orderWriteRepository;
@@ -37,11 +32,13 @@ namespace MiniECommerce.API.Controllers
         private readonly IInvoiceFileReadRepository _invoiceFileReadRepository;
         private readonly IInvoiceFileWriteRepository _invoiceFileWriteRepository;
         private readonly IConfiguration _configuration;
-
+        */
 
         readonly IMediator _mediator;
 
-        public ProductsController(IProductWriteRepository productWriteRepository,
+        public ProductsController(
+            /*
+            IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
             IOrderWriteRepository orderWriteRepository,
             ICustomerWriteRepository customerWriteRepository,
@@ -56,10 +53,11 @@ namespace MiniECommerce.API.Controllers
             IInvoiceFileReadRepository invoiceFileReadRepository,
             IInvoiceFileWriteRepository invoiceFileWriteRepository,
             IConfiguration configuration,
-
+            */
 
             IMediator mediator)
         {
+            /*
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
             _orderWriteRepository = orderWriteRepository;
@@ -75,7 +73,7 @@ namespace MiniECommerce.API.Controllers
             _invoiceFileReadRepository = invoiceFileReadRepository;
             _invoiceFileWriteRepository = invoiceFileWriteRepository;
             _configuration = configuration;
-
+            */
 
             _mediator = mediator;
         }

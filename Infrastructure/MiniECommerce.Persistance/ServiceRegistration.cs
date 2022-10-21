@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MiniECommerce.Application.Abstractions;
 using MiniECommerce.Application.Repositories;
+using MiniECommerce.Domain.Entities.Identity;
 using MiniECommerce.Persistence.Concretes;
 using MiniECommerce.Persistence.Contexts;
 using MiniECommerce.Persistence.Repositories;
@@ -21,6 +22,16 @@ namespace MiniECommerce.Persistence
         {
             //services.AddSingleton<IProductService, ProductService>();
             services.AddDbContext<MiniECommerceDbContext>(options => options.UseNpgsql(Configuration.ConnectionString)); //, ServiceLifetime.Singleton
+            services.AddIdentity<AppUser,AppRole>(options =>
+            {
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+
+            }).AddEntityFrameworkStores<MiniECommerceDbContext>();
+
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();

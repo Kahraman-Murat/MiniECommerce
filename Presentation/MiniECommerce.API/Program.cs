@@ -1,4 +1,6 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using MiniECommerce.Application;
 using MiniECommerce.Application.Validators.Products;
 using MiniECommerce.Infrastructure;
@@ -7,6 +9,7 @@ using MiniECommerce.Infrastructure.Filters;
 using MiniECommerce.Infrastructure.Services.Storage.Azure;
 using MiniECommerce.Infrastructure.Services.Storage.Local;
 using MiniECommerce.Persistence;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,22 @@ builder.Services.AddControllers(options=> options.Filters.Add<ValidationFilter>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("Admin", options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = true, //token degerini kimler / hangi originler / siteler kullanacak
+            ValidateIssuer = true, //token degerini kim dagitiyor
+            ValidateLifetime = true, //token degeri süresini belirler
+            ValidateIssuerSigningKey = true, //token degerinin uygulamamiza ait security key verisi
+
+            ValidAudience = builder.Configuration["Token:Audience"],
+            ValidIssuer = builder.Configuration["Token:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+        };
+    });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -49,6 +68,7 @@ app.UseStaticFiles();
 app.UseCors(); //"myclients"
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

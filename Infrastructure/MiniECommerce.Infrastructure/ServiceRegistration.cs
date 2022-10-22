@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MiniECommerce.Application.Abstractions.Storage;
+using MiniECommerce.Application.Abstractions.Token;
 using MiniECommerce.Infrastructure.Enums;
 using MiniECommerce.Infrastructure.Services.Storage;
 using MiniECommerce.Infrastructure.Services.Storage.Azure;
 using MiniECommerce.Infrastructure.Services.Storage.Local;
+using MiniECommerce.Infrastructure.Services.Token;
 
 namespace MiniECommerce.Infrastructure
 {
@@ -13,6 +15,7 @@ namespace MiniECommerce.Infrastructure
         {
             //serviceCollection.AddScoped<IFileService, FileService>();
             serviceCollection.AddScoped<IStorageService, StorageService>();
+            serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         }
 
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage

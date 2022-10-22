@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using MiniECommerce.Application.Abstractions.Token;
+using MiniECommerce.Application.DTOs;
 using MiniECommerce.Application.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,16 @@ namespace MiniECommerce.Application.Features.Commands.AppUser.LoginUser
     {
         readonly UserManager<U.AppUser> _userManager;
         readonly SignInManager<U.AppUser> _singInManager;
+        readonly ITokenHandler _tokenHandler;
 
-        public LoginUserCommandResponseHandler(UserManager<U.AppUser> userManager, SignInManager<U.AppUser> singInManager)
+        public LoginUserCommandResponseHandler(
+            UserManager<U.AppUser> userManager, 
+            SignInManager<U.AppUser> singInManager,
+            ITokenHandler tokenHandler)
         {
             _userManager = userManager;
             _singInManager = singInManager;
+            _tokenHandler = tokenHandler;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
@@ -28,15 +35,24 @@ namespace MiniECommerce.Application.Features.Commands.AppUser.LoginUser
                 user = await _userManager.FindByEmailAsync(request.UserNameOrEmail);
 
             if (user == null)
-                throw new NotFoundUserException("Kullanici veya sifre hatali...");
+                throw new AuthenticationErrorException(); //NotFoundUserException("Kullanici veya sifre hatali...");
 
             SignInResult result = await _singInManager.CheckPasswordSignInAsync(user, request.Password, false);
             if (result.Succeeded) // Authentication basarili
             {
-                // yetki belirle
+                Token token = _tokenHandler.CreateAccessToken(5);
+                return new LoginUserSuccessCommandResponse()
+                {
+                    Token = token
+                };
             }
+            //return new LoginUserErrorCommandResponse()
+            //{
+            //    Message = "Kullanici adi veya sifre Hatasi"
+            //};
+            throw new AuthenticationErrorException();
 
-            return new();
+
         }
     }
 }

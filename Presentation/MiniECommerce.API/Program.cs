@@ -19,6 +19,7 @@ builder.Services.AddInfraStructureServices();
 builder.Services.AddApplicationServices(); 
 
 
+
 builder.Services.AddStorage<LocalStorage>();
 //builder.Services.AddStorage<AzureStorage>();
 

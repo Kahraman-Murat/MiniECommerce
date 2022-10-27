@@ -3,11 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MiniECommerce.Application.Abstractions;
+using MiniECommerce.Application.Abstractions.Services;
+using MiniECommerce.Application.Abstractions.Services.Authentications;
 using MiniECommerce.Application.Repositories;
 using MiniECommerce.Domain.Entities.Identity;
 using MiniECommerce.Persistence.Concretes;
 using MiniECommerce.Persistence.Contexts;
 using MiniECommerce.Persistence.Repositories;
+using MiniECommerce.Persistence.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +50,11 @@ namespace MiniECommerce.Persistence
 
             services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IExternalAuthentication, AuthService>();
+            services.AddScoped<IInternalAuthentication, AuthService>();
         }
     }
 }

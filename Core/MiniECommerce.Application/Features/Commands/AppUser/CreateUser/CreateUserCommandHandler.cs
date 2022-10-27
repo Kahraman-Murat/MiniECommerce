@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using MiniECommerce.Application.Abstractions.Services;
+using MiniECommerce.Application.DTOs.User;
 using MiniECommerce.Application.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -12,32 +14,30 @@ namespace MiniECommerce.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandReuquest, CreateUserCommandResponse>
     {
-        readonly UserManager<E.AppUser> _userManager;
+        readonly IUserService _userService;
 
-        public CreateUserCommandHandler(UserManager<E.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandReuquest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new()
+
+            CreateUserResponse response = await _userService.CreateAsync(new()
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = request.UserName,
                 Email = request.Email,
-                NameSurname = request.NameSurname
-            }, request.Password);
+                NameSurname = request.NameSurname,
+                Password = request.Password,
+                PasswordConfirm = request.PasswordConfirm,
+                UserName = request.UserName,
+            });
 
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-
-            if (result.Succeeded)
-                response.Message = "Kullanici basariyla olusturulmustur.";
-            else
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description}\n";
-
-            return response;
+            return new()
+            {
+                Message = response.Message,
+                Succeeded = response.Succeeded,
+            };
 
             //throw new UserCreateFailedException();
         }

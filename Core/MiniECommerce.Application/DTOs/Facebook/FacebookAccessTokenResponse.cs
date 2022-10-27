@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MiniECommerce.Application.DTOs.Facebook
 {
-    internal class FacebookAccessTokenResponse
+    public class FacebookAccessTokenResponse
     {
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }

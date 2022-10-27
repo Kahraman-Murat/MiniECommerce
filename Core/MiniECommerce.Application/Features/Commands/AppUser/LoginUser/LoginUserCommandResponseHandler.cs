@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using MiniECommerce.Application.Abstractions.Services;
 using MiniECommerce.Application.Abstractions.Token;
 using MiniECommerce.Application.DTOs;
 using MiniECommerce.Application.Exceptions;
@@ -18,41 +19,27 @@ namespace MiniECommerce.Application.Features.Commands.AppUser.LoginUser
         readonly SignInManager<U.AppUser> _singInManager;
         readonly ITokenHandler _tokenHandler;
 
+        readonly IAuthService _authService;
+
         public LoginUserCommandResponseHandler(
-            UserManager<U.AppUser> userManager, 
+            UserManager<U.AppUser> userManager,
             SignInManager<U.AppUser> singInManager,
-            ITokenHandler tokenHandler)
+            ITokenHandler tokenHandler,
+            IAuthService authService)
         {
             _userManager = userManager;
             _singInManager = singInManager;
             _tokenHandler = tokenHandler;
+            _authService = authService;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            U.AppUser user = await _userManager.FindByNameAsync(request.UserNameOrEmail);
-            if (user == null)
-                user = await _userManager.FindByEmailAsync(request.UserNameOrEmail);
-
-            if (user == null)
-                throw new AuthenticationErrorException(); //NotFoundUserException("Kullanici veya sifre hatali...");
-
-            SignInResult result = await _singInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            if (result.Succeeded) // Authentication basarili
+            var token = await _authService.LoginAsync(request.UserNameOrEmail, request.Password, 15);
+            return new LoginUserSuccessCommandResponse()
             {
-                Token token = _tokenHandler.CreateAccessToken(5);
-                return new LoginUserSuccessCommandResponse()
-                {
-                    Token = token
-                };
-            }
-            //return new LoginUserErrorCommandResponse()
-            //{
-            //    Message = "Kullanici adi veya sifre Hatasi"
-            //};
-            throw new AuthenticationErrorException();
-
-
+                Token = token
+            };
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MiniECommerce.Application.Abstractions.Services;
 using MiniECommerce.Application.DTOs.User;
+using MiniECommerce.Application.Exceptions;
 using MiniECommerce.Domain.Entities.Identity;
 using E = MiniECommerce.Domain.Entities.Identity;
 
@@ -34,6 +35,20 @@ namespace MiniECommerce.Persistence.Services
                     response.Message += $"{error.Code} - {error.Description}\n";
 
             return response;
+        }
+
+        public async Task UpdateRefreshToken(string refreshToken, E.AppUser user, DateTime accessTokenDate, int AddOnAccesshTokenDate)
+        {
+            //AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(AddOnAccesshTokenDate);
+                await _userManager.UpdateAsync(user);
+            }
+            else
+                throw new NotFoundUserException();
+            
         }
     }
 }

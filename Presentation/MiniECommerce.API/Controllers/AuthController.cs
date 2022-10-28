@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiniECommerce.Application.Features.Commands.AppUser.FacebookLogin;
 using MiniECommerce.Application.Features.Commands.AppUser.GoogleLogin;
 using MiniECommerce.Application.Features.Commands.AppUser.LoginUser;
+using MiniECommerce.Application.Features.Commands.AppUser.RefreshTokenLogin;
 
 namespace MiniECommerce.API.Controllers
 {
@@ -21,6 +22,13 @@ namespace MiniECommerce.API.Controllers
         public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
         {
             LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginCommandRequest refreshTokenLoginCommandRequest)
+        {
+            RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshTokenLoginCommandRequest);
             return Ok(response);
         }
 

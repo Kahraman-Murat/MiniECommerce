@@ -15,21 +15,10 @@ namespace MiniECommerce.Application.Features.Commands.AppUser.LoginUser
 {
     internal class LoginUserCommandResponseHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        readonly UserManager<U.AppUser> _userManager;
-        readonly SignInManager<U.AppUser> _singInManager;
-        readonly ITokenHandler _tokenHandler;
-
         readonly IAuthService _authService;
 
-        public LoginUserCommandResponseHandler(
-            UserManager<U.AppUser> userManager,
-            SignInManager<U.AppUser> singInManager,
-            ITokenHandler tokenHandler,
-            IAuthService authService)
+        public LoginUserCommandResponseHandler(IAuthService authService)
         {
-            _userManager = userManager;
-            _singInManager = singInManager;
-            _tokenHandler = tokenHandler;
             _authService = authService;
         }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
 using MiniECommerce.API.Configurations.ColumnWriters;
+using MiniECommerce.API.Extensions;
 using MiniECommerce.Application;
 using MiniECommerce.Application.Validators.Products;
 using MiniECommerce.Infrastructure;
@@ -105,6 +106,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 
 app.UseStaticFiles();
 

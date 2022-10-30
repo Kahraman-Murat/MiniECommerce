@@ -12,6 +12,7 @@ using MiniECommerce.Infrastructure.Filters;
 using MiniECommerce.Infrastructure.Services.Storage.Azure;
 using MiniECommerce.Infrastructure.Services.Storage.Local;
 using MiniECommerce.Persistence;
+using MiniECommerce.SignalR;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
@@ -25,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfraStructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddSignalRServices();
 
 
 
@@ -32,7 +34,7 @@ builder.Services.AddStorage<LocalStorage>();
 //builder.Services.AddStorage<AzureStorage>();
 
 // Gelen belirli isteklere acik olma politikasi icin
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyMethod().AllowAnyHeader()
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
 ));
 
 // Tüm gelen isteklere acik olma politikasi icin
@@ -128,5 +130,6 @@ app.Use(async(context, next) =>
 });
 
 app.MapControllers();
+app.MapHubs();
 
 app.Run();

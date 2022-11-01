@@ -28,9 +28,10 @@ namespace MiniECommerce.Application.Features.Queries.ProductImageFile.GetProduct
 
             return product?.ProductImageFiles.Select(p => new GetProductImagesQueryResponse
             {
-                Path = $"{_configuration["BaseStorageUrl"]}\\{p.Path}",
+                Id = p.Id,
                 FileName = p.FileName,
-                Id = p.Id
+                Path = $"{_configuration["BaseStorageUrl"]}\\{p.Path}",
+                Showcase = p.Showcase
             }).ToList();
         }
     }

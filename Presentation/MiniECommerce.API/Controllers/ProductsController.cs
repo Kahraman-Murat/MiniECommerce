@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiniECommerce.Application.Features.Commands.Product.CreateProduct;
 using MiniECommerce.Application.Features.Commands.Product.RemoveProduct;
 using MiniECommerce.Application.Features.Commands.Product.UpdateProduct;
+using MiniECommerce.Application.Features.Commands.ProductImageFile.ChangeShowcaseImage;
 using MiniECommerce.Application.Features.Commands.ProductImageFile.RemoveProductImage;
 using MiniECommerce.Application.Features.Commands.ProductImageFile.UploadProductImage;
 using MiniECommerce.Application.Features.Queries.Product.GetAllProduct;
@@ -15,7 +16,7 @@ namespace MiniECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Admin")]
+    //[Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
         /*
@@ -146,6 +147,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest) //VM_Create_Product model
         {
             CreateProductCommandResponse response = await _mediator.Send(createProductCommandRequest);
@@ -164,6 +166,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest)//VM_Update_Product model
         {
             UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
@@ -180,6 +183,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] RemoveProductCommandRequest removeProductCommandRequest) //string id
         {
             RemoveProductCommandResponse response = await _mediator.Send(removeProductCommandRequest);
@@ -195,6 +199,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpPost("[action]")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest) //string id
         {
             uploadProductImageCommandRequest.Files = Request.Form.Files;
@@ -278,6 +283,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpGet("[action]/{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> GetProductImages([FromRoute] GetProductImagesQueryRequest getProductImagesQueryRequest) // string id
         {
             List<GetProductImagesQueryResponse> response = await _mediator.Send(getProductImagesQueryRequest);
@@ -297,6 +303,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpDelete("[action]/{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> DeleteProductImage([FromRoute] RemoveProductImageCommandRequest removeProductImageCommandRequest, [FromQuery] string imageId) // string id,
         {
             removeProductImageCommandRequest.ImageId = imageId;
@@ -310,6 +317,17 @@ namespace MiniECommerce.API.Controllers
             //await _productWriteRepository.SaveAsync();
             //return Ok();
         }
+
+        [HttpPut("[action]")] //  /{imageId}/{productId}
+        [Authorize(AuthenticationSchemes = "Admin")]
+        public async Task<IActionResult> ChangeShowcaseImage([FromQuery] ChangeShowcaseImageCommadRequest changeShowcaseImageCommadRequest)
+        {
+            ChangeShowcaseImageCommadResponse response = await _mediator.Send(changeShowcaseImageCommadRequest);
+
+            return Ok(response);
+        }
+
+
 
         //private readonly IProductService _productService;
 

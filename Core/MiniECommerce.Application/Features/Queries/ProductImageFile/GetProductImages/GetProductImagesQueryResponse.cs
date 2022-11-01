@@ -8,8 +8,9 @@ namespace MiniECommerce.Application.Features.Queries.ProductImageFile.GetProduct
 {
     public class GetProductImagesQueryResponse
     {
-        public string Path { get; set; }
-        public string FileName { get; set; }
         public Guid Id { get; set; }
+        public string FileName { get; set; }
+        public string Path { get; set; }
+        public bool Showcase { get; set; }
     }
 }

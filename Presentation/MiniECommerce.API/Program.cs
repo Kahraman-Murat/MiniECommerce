@@ -22,6 +22,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor(); //Client tan gelen request sonrasi olusturulan HttpContext nesnesine katmanlardaki classlar üzerinden (business logic) erisebilmemizi saglayan bir servistir
+
 // Add services to the container.
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfraStructureServices();

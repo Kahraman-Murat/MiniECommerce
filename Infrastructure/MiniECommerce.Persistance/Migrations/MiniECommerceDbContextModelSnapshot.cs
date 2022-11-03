@@ -128,6 +128,82 @@ namespace MiniECommerce.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Basket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Baskets");
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.BasketItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BasketId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BasketId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("BasketItems");
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.CompletedOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("CompletedOrders");
+                });
+
             modelBuilder.Entity("MiniECommerce.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -284,7 +360,6 @@ namespace MiniECommerce.Persistence.Migrations
             modelBuilder.Entity("MiniECommerce.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
@@ -294,10 +369,11 @@ namespace MiniECommerce.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OrderCode")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -306,7 +382,8 @@ namespace MiniECommerce.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("OrderCode")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -336,21 +413,6 @@ namespace MiniECommerce.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.Property<Guid>("OrdersId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("OrdersId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("ProductProductImageFile", b =>
@@ -439,30 +501,56 @@ namespace MiniECommerce.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MiniECommerce.Domain.Entities.Order", b =>
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Basket", b =>
                 {
-                    b.HasOne("MiniECommerce.Domain.Entities.Customer", "Customer")
-                        .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("MiniECommerce.Domain.Entities.Identity.AppUser", "User")
+                        .WithMany("Baskets")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.BasketItem", b =>
                 {
-                    b.HasOne("MiniECommerce.Domain.Entities.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
+                    b.HasOne("MiniECommerce.Domain.Entities.Basket", "Basket")
+                        .WithMany("BasketItems")
+                        .HasForeignKey("BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MiniECommerce.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
+                    b.HasOne("MiniECommerce.Domain.Entities.Product", "Product")
+                        .WithMany("BasketItems")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Basket");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.CompletedOrder", b =>
+                {
+                    b.HasOne("MiniECommerce.Domain.Entities.Order", "Order")
+                        .WithOne("CompletedOrder")
+                        .HasForeignKey("MiniECommerce.Domain.Entities.CompletedOrder", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("MiniECommerce.Domain.Entities.Basket", "Basket")
+                        .WithOne("Order")
+                        .HasForeignKey("MiniECommerce.Domain.Entities.Order", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Basket");
                 });
 
             modelBuilder.Entity("ProductProductImageFile", b =>
@@ -480,9 +568,28 @@ namespace MiniECommerce.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MiniECommerce.Domain.Entities.Customer", b =>
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Basket", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("BasketItems");
+
+                    b.Navigation("Order")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Identity.AppUser", b =>
+                {
+                    b.Navigation("Baskets");
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Order", b =>
+                {
+                    b.Navigation("CompletedOrder")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MiniECommerce.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("BasketItems");
                 });
 #pragma warning restore 612, 618
         }

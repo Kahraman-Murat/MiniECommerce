@@ -16,8 +16,7 @@ namespace MiniECommerce.API.Controllers
 
         [HttpGet("[action]")]
         public IActionResult GetBaseStorageUrl()
-        {
-            //string aaa = _configuration["BaseStorageUrl"];
+        {            
             return Ok(new
             {
                 Url = _configuration["BaseStorageUrl"]

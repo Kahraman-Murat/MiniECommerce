@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace MiniECommerce.Domain.Entities
 {
-    public class Customer : BaseEntity
+    public class CompletedOrder : BaseEntity
     {
-        public string Name { get; set; }
-        //public ICollection<Order> Orders { get; set; }
-
+        public Guid OrderId { get; set; }
+        public Order Order { get; set; }
     }
 }

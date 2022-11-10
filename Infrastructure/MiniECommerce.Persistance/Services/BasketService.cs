@@ -128,5 +128,15 @@ namespace MiniECommerce.Persistence.Services
                 await _basketWriteRepository.SaveAsync();
             }
         }
+
+        public Basket? GetUserActiveBasket
+        {
+            get
+            {
+                Basket? basket = ContextUser().Result;
+                return basket;
+            }         
+            
+        }
     }
 }

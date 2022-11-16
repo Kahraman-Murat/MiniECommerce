@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MiniECommerce.Application.Features.Commands.AppUser.CreateUser;
+using MiniECommerce.Application.Features.Commands.AppUser.UpdatePassword;
 
 namespace MiniECommerce.API.Controllers
 {
@@ -20,6 +21,12 @@ namespace MiniECommerce.API.Controllers
         {
             CreateUserCommandResponse response = await _mediator.Send(createUserCommandReuquest);
             return Ok(response);
+        }
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordCommadRequest updatePasswordCommadRequest)
+        {
+            UpdatePasswordCommadResponse response = await _mediator.Send(updatePasswordCommadRequest);
+            return Ok(response);    
         }
     }
 }

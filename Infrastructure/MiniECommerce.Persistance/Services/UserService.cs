@@ -2,6 +2,7 @@
 using MiniECommerce.Application.Abstractions.Services;
 using MiniECommerce.Application.DTOs.User;
 using MiniECommerce.Application.Exceptions;
+using MiniECommerce.Application.Helpers;
 using MiniECommerce.Domain.Entities.Identity;
 using E = MiniECommerce.Domain.Entities.Identity;
 
@@ -37,7 +38,7 @@ namespace MiniECommerce.Persistence.Services
             return response;
         }
 
-        public async Task UpdateRefreshToken(string refreshToken, E.AppUser user, DateTime accessTokenDate, int AddOnAccesshTokenDate)
+        public async Task UpdateRefreshTokenAsync(string refreshToken, E.AppUser user, DateTime accessTokenDate, int AddOnAccesshTokenDate)
         {
             //AppUser user = await _userManager.FindByIdAsync(userId);
             if (user != null)
@@ -50,5 +51,20 @@ namespace MiniECommerce.Persistence.Services
                 throw new NotFoundUserException();
             
         }
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                resetToken.UrlDecode();
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+                if (result.Succeeded)
+                    await _userManager.UpdateSecurityStampAsync(user);
+                else
+                    throw new PasswordChangeFailedException();
+            }
+        }
+
+
     }
 }

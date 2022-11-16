@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -25,7 +26,7 @@ namespace MiniECommerce.Persistence
         {
             //services.AddSingleton<IProductService, ProductService>();
             services.AddDbContext<MiniECommerceDbContext>(options => options.UseNpgsql(Configuration.ConnectionString)); //, ServiceLifetime.Singleton
-            services.AddIdentity<AppUser,AppRole>(options =>
+            services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequiredLength = 3;
                 options.Password.RequireNonAlphanumeric = false;
@@ -33,7 +34,9 @@ namespace MiniECommerce.Persistence
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
 
-            }).AddEntityFrameworkStores<MiniECommerceDbContext>();
+            }).AddEntityFrameworkStores<MiniECommerceDbContext>()
+            .AddDefaultTokenProviders(); //reset token uretmek icin eklenir
+
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();

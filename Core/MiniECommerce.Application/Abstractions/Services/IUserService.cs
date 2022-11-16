@@ -11,6 +11,7 @@ namespace MiniECommerce.Application.Abstractions.Services
     public interface IUserService
     {
         Task<CreateUserResponse> CreateAsync(CreateUser model);
-        Task UpdateRefreshToken(string refreshToken, U.AppUser user, DateTime accessTokenDate, int AddOnAccesshTokenDate);
+        Task UpdateRefreshTokenAsync(string refreshToken, U.AppUser user, DateTime accessTokenDate, int AddOnAccesshTokenDate);
+        Task UpdatePasswordAsync(string userId, string resetToken, string newPassword);
     }
 }

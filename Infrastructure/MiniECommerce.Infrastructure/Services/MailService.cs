@@ -56,5 +56,13 @@ namespace MiniECommerce.Infrastructure.Services
 
             await SendMailAsync(to, "Sifre Yenileme Talebi", mail.ToString());
         }
+
+        public async Task SendCompletedOrderMailAsync(string to, string orderCode, DateTime orderDate, string userName)
+        {
+            string mail = $"Sayin {userName} Merhaba<br>" +
+                $"{orderDate} tarihinde vermis oldugunuz {orderCode} kodlu siparisiniz tamamlanmis ve kargo firmasina verilmistir.<br>Saygilarimizla";
+            
+            await SendMailAsync(to, $"{orderCode} siparis numarali siparisiniz tamamlandi", mail);
+        }
     }
 }

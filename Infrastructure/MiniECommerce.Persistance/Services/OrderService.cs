@@ -2,12 +2,14 @@
 using MiniECommerce.Application.Abstractions.Services;
 using MiniECommerce.Application.DTOs.Order;
 using MiniECommerce.Application.Repositories;
+using MiniECommerce.Domain.Entities;
 using MiniECommerce.Persistence.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CompletedOrderDTO = MiniECommerce.Application.DTOs.Order.CompletedOrderDTO;
 
 namespace MiniECommerce.Persistence.Services
 {
@@ -15,12 +17,21 @@ namespace MiniECommerce.Persistence.Services
     {
         readonly IOrderWriteRepository _orderWriteRepository;
         readonly IOrderReadRepository _orderReadRepository;
+        readonly ICompletedOrderWriteRepository _completedOrderWriteRepository;
+        readonly ICompletedOrderReadRepository _completedOrderReadRepository;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository )
+        public OrderService(
+            IOrderWriteRepository orderWriteRepository,
+            IOrderReadRepository orderReadRepository,
+            ICompletedOrderWriteRepository completedOrderWriteRepository,
+            ICompletedOrderReadRepository completedOrderReadRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _orderReadRepository = orderReadRepository;
+            _completedOrderWriteRepository = completedOrderWriteRepository;
+            _completedOrderReadRepository = completedOrderReadRepository;
         }
+
 
         public async Task CreateOrderAsync(CreateOrder createOrder)
         {
@@ -48,27 +59,58 @@ namespace MiniECommerce.Persistence.Services
             var data = query.Skip(page * size).Take(size);
                           //.Take((page * size)..size)
 
+            var data2 = from order in data
+                        join completedOrder in _completedOrderReadRepository.Table
+                        on order.Id equals completedOrder.OrderId into co
+                        from _co in co.DefaultIfEmpty()
+                        select new
+                        {
+                            order.Id,
+                            order.CreatedDate,
+                            order.OrderCode,
+                            order.Basket,
+                            Completed = _co != null ? true : false,
+                        };
+
             return new()
             {
                 TotalOrderCount = await query.CountAsync(),
-                Orders = await data.Select(o=> new
+                Orders = await data2.Select(o=> new
                 {
                     Id = o.Id,
                     CreatedDate = o.CreatedDate,
                     OrderCode = o.OrderCode,
                     TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
-                    UserName = o.Basket.User.UserName
+                    UserName = o.Basket.User.UserName,
+                    o.Completed
                 }).ToListAsync()
             };
         }
 
         public async Task<SingleOrder> GetOrderByIdAsync(string id)
         {
-            var data = await _orderReadRepository.Table
+            var _data = _orderReadRepository.Table
                 .Include(o => o.Basket)
                     .ThenInclude(b => b.BasketItems)
-                        .ThenInclude(bi => bi.Product)
-                            .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+                        .ThenInclude(bi => bi.Product);
+                            
+
+            var data =await (from order in _data
+                        join completedOrder in _completedOrderReadRepository.Table
+                        on order.Id equals completedOrder.OrderId into co
+                        from _co in co.DefaultIfEmpty()
+                        select new
+                        {
+                            order.Id,
+                            order.CreatedDate,
+                            order.OrderCode,
+                            order.Basket,
+                            Completed = _co != null ? true : false,
+                            Address = order.Address,
+                            Description = order.Description
+                        }).FirstOrDefaultAsync(o => o.Id == Guid.Parse(id)); ;
+
+
             return new()
             {
                 Id = data.Id.ToString(),
@@ -81,8 +123,29 @@ namespace MiniECommerce.Persistence.Services
                 Address = data.Address,
                 CreatedDate = data.CreatedDate,
                 Description = data.Description,
-                OrderCode = data.OrderCode
+                OrderCode = data.OrderCode,
+                Completed = data.Completed
             };
+        }
+
+        public async Task<(bool, CompletedOrderDTO)> CompleteOrderAsync(string id)
+        {
+            Order? order = await _orderReadRepository.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.User)
+                .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+                
+            if(order != null)
+            {
+                await _completedOrderWriteRepository.AddAsync(new() { OrderId = Guid.Parse(id) });
+                return (await _completedOrderWriteRepository.SaveAsync() > 0, new() { 
+                    OrderCode = order.OrderCode,
+                    OrderDate = order.CreatedDate,
+                    UserName = order.Basket.User.UserName,
+                    EMail = order.Basket.User.Email
+                });                
+            }
+            return (false, null);
         }
     }
 }

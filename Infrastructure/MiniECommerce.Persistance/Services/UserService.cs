@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MiniECommerce.Application.Abstractions.Services;
 using MiniECommerce.Application.DTOs.User;
 using MiniECommerce.Application.Exceptions;
 using MiniECommerce.Application.Helpers;
 using MiniECommerce.Domain.Entities.Identity;
+using System.Data;
 using E = MiniECommerce.Domain.Entities.Identity;
 
 namespace MiniECommerce.Persistence.Services
@@ -65,6 +67,46 @@ namespace MiniECommerce.Persistence.Services
             }
         }
 
+        public async Task<List<ListUser>> GetAllUsersAsync(int page, int size)
+        {
+            var user = await _userManager.Users
+                .Skip(page * size)
+                .Take(size)
+                .ToListAsync();
+            return user.Select(user => new ListUser
+            {
+                Id = user.Id,
+                Email = user.Email,
+                NameSurname = user.NameSurname,
+                UserName = user.UserName,
+                TwoFactorEnabled =  user.TwoFactorEnabled
+                
+            }).ToList();
+        }
+        public int TotalUserCount => _userManager.Users.Count();
 
+        public async Task AssignRoleToUser(string userId, string[] roles)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+                await _userManager.AddToRolesAsync(user, roles);
+            }
+        }
+
+        public async Task<string[]> GetRolesToUserAsync(string userId)
+        {
+            AppUser user = _ = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                return userRoles.ToArray();
+
+            }
+            return new string[] {  };
+        }
     }
 }

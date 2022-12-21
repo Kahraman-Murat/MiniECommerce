@@ -13,5 +13,9 @@ namespace MiniECommerce.Application.Abstractions.Services
         Task<CreateUserResponse> CreateAsync(CreateUser model);
         Task UpdateRefreshTokenAsync(string refreshToken, U.AppUser user, DateTime accessTokenDate, int AddOnAccesshTokenDate);
         Task UpdatePasswordAsync(string userId, string resetToken, string newPassword);
+        Task<List<ListUser>> GetAllUsersAsync(int page, int size);
+        int TotalUserCount { get; }
+        Task AssignRoleToUser(string userId, string[] roles);
+        Task<string[]> GetRolesToUserAsync(string userId);
     }
 }

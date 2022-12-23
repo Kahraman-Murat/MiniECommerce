@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
 using MiniECommerce.API.Configurations.ColumnWriters;
 using MiniECommerce.API.Extensions;
+using MiniECommerce.API.Filters;
 using MiniECommerce.Application;
 using MiniECommerce.Application.Validators.Products;
 using MiniECommerce.Infrastructure;
@@ -75,7 +76,11 @@ builder.Services.AddHttpLogging(logging =>
 
 });
 
-builder.Services.AddControllers(options=> options.Filters.Add<ValidationFilter>())
+builder.Services.AddControllers(options => 
+{
+    options.Filters.Add<ValidationFilter>();
+    options.Filters.Add<RolePermissionFilter>();
+})
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 

@@ -54,6 +54,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpPost("assign-role-to-user")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(ActionType = ActionType.Writing, Definition = "Assign Role To User", Menu = "Users")]
         public async Task<IActionResult> AssignRoleToUser(AssignRoleToUserCommandRequest assignRoleToUserCommandRequest)
         {

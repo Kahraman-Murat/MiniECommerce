@@ -13,7 +13,7 @@ namespace MiniECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Admin")]
+    //[Authorize(AuthenticationSchemes = "Admin")]
     public class RolesController : ControllerBase
     {
         readonly IMediator _mediator;
@@ -24,6 +24,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(ActionType = Application.Enums.ActionType.Reading, Definition = "Get Roles", Menu = "Roles")]
         public async Task<IActionResult> GetRoles([FromQuery] GetRolesQueryRequest getRolesQueryRequest)
         {
@@ -32,6 +33,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpGet("{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(ActionType = Application.Enums.ActionType.Reading, Definition = "Get Role By Id", Menu = "Roles")]
         public async Task<IActionResult> GetRoles([FromRoute] GetRoleByIdQueryRequest getRoleByIdQueryRequest)
         {
@@ -40,6 +42,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpPost()]
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(ActionType = Application.Enums.ActionType.Writing, Definition = "Create Role", Menu = "Roles")]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommandRequest createRoleCommandRequest)
         {
@@ -49,6 +52,7 @@ namespace MiniECommerce.API.Controllers
 
 
         [HttpPut("{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(ActionType = Application.Enums.ActionType.Updating, Definition = "Update Role", Menu = "Roles")]
         public async Task<IActionResult> UpdateRole([FromBody, FromRoute] UpdateRoleCommandRequest updateRoleCommandRequest)
         {
@@ -57,6 +61,7 @@ namespace MiniECommerce.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(ActionType = Application.Enums.ActionType.Deleting, Definition = "Delete Role", Menu = "Roles")]
         public async Task<IActionResult> DeleteRole([FromRoute] DeleteRoleCommandRequest deleteRoleCommandRequest)
         {

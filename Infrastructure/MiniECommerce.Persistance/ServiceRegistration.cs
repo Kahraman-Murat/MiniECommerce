@@ -8,7 +8,6 @@ using MiniECommerce.Application.Abstractions.Services;
 using MiniECommerce.Application.Abstractions.Services.Authentications;
 using MiniECommerce.Application.Repositories;
 using MiniECommerce.Domain.Entities.Identity;
-using MiniECommerce.Persistence.Concretes;
 using MiniECommerce.Persistence.Contexts;
 using MiniECommerce.Persistence.Repositories;
 using MiniECommerce.Persistence.Services;
@@ -72,6 +71,7 @@ namespace MiniECommerce.Persistence
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
+            services.AddScoped<IProductService, ProductService>();
         }
     }
 }

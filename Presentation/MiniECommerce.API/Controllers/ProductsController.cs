@@ -8,6 +8,7 @@ using MiniECommerce.Application.Enums;
 using MiniECommerce.Application.Features.Commands.Product.CreateProduct;
 using MiniECommerce.Application.Features.Commands.Product.RemoveProduct;
 using MiniECommerce.Application.Features.Commands.Product.UpdateProduct;
+using MiniECommerce.Application.Features.Commands.Product.UpdateStockQRCodeToProduct;
 using MiniECommerce.Application.Features.Commands.ProductImageFile.ChangeShowcaseImage;
 using MiniECommerce.Application.Features.Commands.ProductImageFile.RemoveProductImage;
 using MiniECommerce.Application.Features.Commands.ProductImageFile.UploadProductImage;
@@ -43,8 +44,15 @@ namespace MiniECommerce.API.Controllers
         [HttpGet("qrcode/{productId}")]
         public async Task<IActionResult> GetQRCodeToProduct([FromRoute] string productId)
         {
-            var data =  await _productService.QRCodeToProductAsync(productId);
+            var data = await _productService.QRCodeToProductAsync(productId);
             return File(data, "image/png");
+        }
+
+        [HttpPut("qrcode")]
+        public async Task<IActionResult> UpdateStockQRCodeToProduct([FromBody] UpdateStockQRCodeToProductCommandRequest updateStockQRCodeToProductCommandRequest)
+        {
+            UpdateStockQRCodeToProductCommandResponse response = await _mediator.Send(updateStockQRCodeToProductCommandRequest);
+            return Ok(response);
         }
 
         [HttpGet("{Id}")]

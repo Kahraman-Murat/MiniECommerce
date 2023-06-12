@@ -1,0 +1,11 @@
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\bin\Debug\Csv_Prüfer.exe.config
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\bin\Debug\Csv_Prüfer.exe
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\bin\Debug\Csv_Prüfer.pdb
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.csproj.AssemblyReference.cache
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.csproj.SuggestedBindingRedirects.cache
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.Form1.resources
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.Properties.Resources.resources
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.csproj.GenerateResource.cache
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.csproj.CoreCompileInputs.cache
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.exe
+D:\_Projelerim\CSharp_Projelerim\Csv_Prüfer\Csv_Prüfer\obj\Debug\Csv_Prüfer.pdb
